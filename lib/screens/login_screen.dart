@@ -6,22 +6,33 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFF8DC), // Arka plan rengi
+      backgroundColor: Color(0xFFB3001E), // Kırmızı arka plan
       body: Column(
         children: [
-          // Üst kırmızı alan
+          // Üst kırmızı alan (gradient)
           Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            color: Color(0xFFB3001E),
+            height: MediaQuery.of(context).size.height * 0.25,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 87, 1, 15), // Koyu kırmızı
+                  Color.fromARGB(255, 128, 2, 23), // Koyu kırmızı
+                  Color.fromARGB(255, 179, 0, 30).withOpacity(0.1), // Açık kırmızı
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                stops: const [0.0, 0.6, 1.0], 
+              ),
+            ),
           ),
-          // Alt beyaz alan
+          // Alt sarı alan (Container) ve köşe yuvarlatma
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Color(0xFFFFF8DC),
+                color: Color(0xFFFFF8DC), // Sarı arka plan
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                  topLeft: Radius.circular(30), // Üst sol köşe yuvarlatma
+                  topRight: Radius.circular(30), // Üst sağ köşe yuvarlatma
                 ),
               ),
               child: Column(
