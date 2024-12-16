@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "91171440695",
+    "project_id": "nava-app-81d4f",
+    "storage_bucket": "nava-app-81d4f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91171440695:android:1e7c4094b64fa3fc8757b2",
+        "android_client_info": {
+          "package_name": "com.aa.nava"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4YwZMFpXl9mLzXMUqvqmACQcwNLlV7dA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

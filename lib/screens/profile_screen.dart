@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:nava/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase import
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProfileScreen extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance; // FirebaseAuth instance
+
   @override
   Widget build(BuildContext context) {
+    // Giriş yapan kullanıcıyı al
+    User? currentUser = _auth.currentUser;
+
     return Scaffold(
       backgroundColor: Color(0xFFFFF8DC),
       appBar: AppBar(
@@ -30,7 +37,8 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.logout, color: Color(0xFFFFF8DC)),
-            onPressed: () {
+            onPressed: () async {
+              await _auth.signOut(); // Firebase'den çıkış yap
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -51,7 +59,8 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Username',
+                  currentUser?.email ??
+                      'No Email', // Kullanıcı email'ini göster
                   style: TextStyle(
                     fontFamily: 'Sarina',
                     fontSize: 24,
@@ -110,9 +119,22 @@ class ProfileScreen extends StatelessWidget {
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                String newPassword = passwordController.text.trim();
+                if (newPassword.isNotEmpty) {
+                  try {
+                    User? user = FirebaseAuth.instance.currentUser;
+                    // Şifreyi güncelle
+                    await user?.updatePassword(newPassword);
+                    await user?.reload(); // Kullanıcıyı yenile
+                    user = FirebaseAuth.instance.currentUser;
+                    Fluttertoast.showToast(
+                        msg: "Password changed successfully!");
+                  } catch (e) {
+                    Fluttertoast.showToast(msg: "Error: $e");
+                  }
+                }
                 Navigator.pop(context);
-                print('New password: ${passwordController.text}');
               },
               child: Text('Save'),
             ),

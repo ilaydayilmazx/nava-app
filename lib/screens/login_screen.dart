@@ -1,8 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:nava/screens/register_screen.dart';
 import 'package:nava/widgets/navigation_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nava/service/auth.dart'; // Auth servisimiz
+import 'package:flutter/cupertino.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final Auth _auth = Auth(); // Auth servisimiz
+
+  // Login işlemi
+  void _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    try {
+      await _auth.signIn(
+          email: email, password: password); // Firebase ile giriş yap
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                NavigationBarPage()), // Başarıyla giriş yapıldığında ana ekrana yönlendir
+      );
+      Fluttertoast.showToast(
+        msg: "Login successful!",
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Error: ${e.toString()}",
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,11 +55,12 @@ class LoginScreen extends StatelessWidget {
                 colors: [
                   Color.fromARGB(255, 87, 1, 15), // Koyu kırmızı
                   Color.fromARGB(255, 128, 2, 23), // Koyu kırmızı
-                  Color.fromARGB(255, 179, 0, 30).withOpacity(0.1), // Açık kırmızı
+                  Color.fromARGB(255, 179, 0, 30)
+                      .withOpacity(0.1), // Açık kırmızı
                 ],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                stops: const [0.0, 0.6, 1.0], 
+                stops: const [0.0, 0.6, 1.0],
               ),
             ),
           ),
@@ -65,6 +104,7 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         TextField(
+                          controller: _emailController, // Email controller
                           decoration: InputDecoration(
                             hintText: 'Email',
                             hintStyle: TextStyle(
@@ -77,6 +117,8 @@ class LoginScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 16),
                         TextField(
+                          controller:
+                              _passwordController, // Password controller
                           obscureText: true,
                           decoration: InputDecoration(
                             hintText: 'Password',
@@ -122,13 +164,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => NavigationBarPage()),
-                          );
-                        },
+                        onPressed: _signIn, // Kullanıcı giriş fonksiyonu
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFFB3001E),
                           shape: RoundedRectangleBorder(
