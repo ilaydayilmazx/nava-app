@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../service/post_service.dart';
 
@@ -174,8 +174,7 @@ class HomePage extends StatelessWidget {
             TextButton(
               onPressed: () async {
                 String musicName = musicController.text.trim();
-                String time =
-                    DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+                DateTime time = DateTime.now();
                 User? currentUser = FirebaseAuth.instance.currentUser;
 
                 if (selectedEmotion != null &&

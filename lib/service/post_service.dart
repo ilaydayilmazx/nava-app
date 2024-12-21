@@ -9,7 +9,7 @@ class PostService {
     required String emotion,
     required String province,
     required String music,
-    required String time,
+    required DateTime time,
   }) async {
     try {
       await _firestore.collection('posts').add({
@@ -17,7 +17,7 @@ class PostService {
         'emotion': emotion,
         'province': province,
         'music': music,
-        'time': time,
+        'time': Timestamp.fromDate(time),
       });
       print('Post created successfully.');
     } catch (e) {
@@ -34,9 +34,13 @@ class PostService {
           .orderBy('time', descending: true)
           .get();
 
-      return snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return {
+          ...data,
+          'id': doc.id,
+        };
+      }).toList();
     } catch (e) {
       print('Error fetching user posts: $e');
       return [];
@@ -51,9 +55,13 @@ class PostService {
           .orderBy('time', descending: true)
           .get();
 
-      return snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return {
+          ...data,
+          'id': doc.id,
+        };
+      }).toList();
     } catch (e) {
       print('Error fetching all posts: $e');
       return [];
