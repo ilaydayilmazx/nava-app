@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import '../service/post_service.dart';
+import '../service/spotify_service.dart';
 
 class HomePage extends StatelessWidget {
   final PostService _postService = PostService();
+  final SpotifyService _spotifyService = SpotifyService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 69, 22, 30), // Üst alan rengi
+        backgroundColor: Color.fromARGB(255, 69, 22, 30),
         elevation: 0,
         title: Row(
           children: [
             Image.asset(
-              'assets/nava.png', // Logo yolu (assets içinde yer almalı)
+              'assets/nava.png',
               height: 40,
             ),
             SizedBox(width: 8),
@@ -40,8 +42,8 @@ class HomePage extends StatelessWidget {
             maxScale: 5.0,
             constrained: false,
             child: SizedBox(
-              width: MediaQuery.of(context).size.width * 3, // SVG genişliği
-              height: constraints.maxHeight, // SVG yüksekliği
+              width: MediaQuery.of(context).size.width * 3,
+              height: constraints.maxHeight,
               child: SvgPicture.asset(
                 'assets/istanbul.svg',
                 fit: BoxFit.fitHeight,
@@ -64,14 +66,18 @@ class HomePage extends StatelessWidget {
     TextEditingController musicController = TextEditingController();
     String? selectedEmotion;
     String? selectedProvince;
-    final List<String> emotions = [
-      'Angry',
-      'Anxious',
-      'Sad',
-      'Neutral',
-      'Excited',
-      'Happy',
-      'Chill'
+    final List<Map<String, dynamic>> emotions = [
+      {
+        'emotion': 'Angry',
+        'color': const Color.fromARGB(255, 160, 2, 26),
+        'emoji': '😡'
+      },
+      {'emotion': 'Anxious', 'color': Colors.red, 'emoji': '😰'},
+      {'emotion': 'Sad', 'color': Colors.orange, 'emoji': '😞'},
+      {'emotion': 'Neutral', 'color': Colors.yellow, 'emoji': '😐'},
+      {'emotion': 'Excited', 'color': Colors.green, 'emoji': '😆'},
+      {'emotion': 'Happy', 'color': Colors.blue, 'emoji': '😊'},
+      {'emotion': 'Chill', 'color': Colors.purple, 'emoji': '😎'}
     ];
     final List<String> provinces = [
       'Adalar',
@@ -127,14 +133,24 @@ class HomePage extends StatelessWidget {
                 SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
-                  children: emotions.map((emotion) {
+                  runSpacing: 4,
+                  children: emotions.map((emotionData) {
                     return ChoiceChip(
-                      label: Text(emotion),
-                      selected: selectedEmotion == emotion,
+                      label: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(emotionData['emoji'],
+                              style: TextStyle(fontSize: 20)),
+                          SizedBox(width: 4),
+                          Text(emotionData['emotion']),
+                        ],
+                      ),
+                      selected: selectedEmotion == emotionData['emotion'],
+                      selectedColor: emotionData['color'],
                       onSelected: (selected) {
-                        selectedEmotion = selected ? emotion : null;
-                        (context as Element)
-                            .markNeedsBuild(); // UI güncellemesi
+                        selectedEmotion =
+                            selected ? emotionData['emotion'] : null;
+                        (context as Element).markNeedsBuild();
                       },
                     );
                   }).toList(),
@@ -153,13 +169,36 @@ class HomePage extends StatelessWidget {
                   }).toList(),
                   onChanged: (value) {
                     selectedProvince = value;
-                    (context as Element).markNeedsBuild(); // UI güncellemesi
+                    (context as Element).markNeedsBuild();
                   },
                 ),
                 SizedBox(height: 16),
-                TextField(
-                  controller: musicController,
-                  decoration: InputDecoration(hintText: 'Enter music name'),
+                TypeAheadField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: musicController,
+                    decoration: InputDecoration(hintText: 'Enter music name'),
+                  ),
+                  suggestionsCallback: (pattern) async {
+                    return await _spotifyService.searchTracks(pattern);
+                  },
+                  itemBuilder: (context, suggestion) {
+                    return ListTile(
+                      leading: suggestion['albumArt'] != null
+                          ? Image.network(
+                              suggestion['albumArt']!,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(Icons.music_note),
+                      title: Text(suggestion['name']!),
+                      subtitle: Text(suggestion['artist']!),
+                    );
+                  },
+                  onSuggestionSelected: (suggestion) {
+                    musicController.text =
+                        '${suggestion['artist']} - ${suggestion['name']}';
+                  },
                 ),
               ],
             ),
