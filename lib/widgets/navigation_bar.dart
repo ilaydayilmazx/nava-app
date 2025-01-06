@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nava/screens/profile_screen.dart';
 import 'package:nava/screens/homepage.dart';
+import 'package:nava/screens/statistics.dart'; // Importing the new page
 
 class NavigationBarPage extends StatefulWidget {
   @override
@@ -12,7 +13,9 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
 
   final List<Widget> _pages = [
     HomePage(),
+    StatisticsPage(),
     ProfileScreen(),
+    // Add the Statistics page here
   ];
 
   void _onItemTapped(int index) {
@@ -35,6 +38,10 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
             label: 'Map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.pie_chart), // Pie chart icon for statistics
+            label: 'Stats',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
