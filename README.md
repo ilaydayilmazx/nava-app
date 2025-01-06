@@ -1,4 +1,4 @@
-# nava Real-Time Emotion Map
+# nava: Real-Time Emotion Map
 
 ## Overview
 Nava-App is a real-time emotion map application designed to visualize and share emotional data and music preferences on a color-coded interactive map of Istanbul. The app allows users to post their emotional states, choose music, and view weekly statistics.
