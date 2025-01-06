@@ -80,8 +80,8 @@ lib/
 - Implement push notifications for weekly stats updates.
 
 ## Contributors
-- **Ilayda Yilmaz** (GitHub: [ilaydayilmazx](https://github.com/ilaydayilmazx))
-- **Ceyda** (Branch collaborator)
+- **Ilayda** (GitHub: [ilaydayilmazx](https://github.com/ilaydayilmazx))
+- **Ceyda** (GitHub: [fceydao](https://github.com/fceydao))
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
